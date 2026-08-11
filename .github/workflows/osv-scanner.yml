@@ -40,6 +40,7 @@ permissions:
 jobs:
   scan:
     name: Scan lockfiles
+    if: github.event_name != 'schedule' || github.repository == 'NousResearch/hermes-agent'
     uses: google/osv-scanner-action/.github/workflows/osv-scanner-reusable.yml@9a498708959aeaef5ef730655706c5a1df1edbc2 # v2.3.8
     with:
       # Scan explicit lockfiles rather than recursing, so we only look at
@@ -59,7 +60,7 @@ jobs:
     name: Emit review status
     runs-on: ubuntu-latest
     needs: scan
-    if: always()
+    if: (github.event_name != 'schedule' || github.repository == 'NousResearch/hermes-agent') && always()
     outputs:
       review_status: ${{ steps.emit.outputs.review_status }}
     steps:
